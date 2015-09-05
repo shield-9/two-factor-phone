@@ -342,15 +342,26 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 		require_once( TWO_FACTOR_PHONE_DIR . 'includes/Twilio/Services/Twilio.php' );
 
 		$code = $this->generate_token( absint( $_REQUEST['user'] ) );
+		$say_options = array(
+			'voice' => 'alice',
+			'language' => 'en-US',
+		);
 
 		$response = new Services_Twilio_Twiml();
-		$response->say( wp_strip_all_tags(
-			sprintf(
-				__( 'Your login confirmation code for %s is %s.', 'two-factor-phone' ),
-				get_bloginfo( 'name' ),
-				$code
-			)
-		) );
+
+		$response->say(
+			wp_strip_all_tags(
+				sprintf(
+					__( 'Your login confirmation code for %s is:', 'two-factor-phone' ),
+					get_bloginfo( 'name' )
+				)
+			),
+			$say_options
+		);
+		foreach ( str_split( $code ) as $number ) {
+			$response->say( $number, $say_options );
+		}
+
 		echo $response;
 		exit;
 	}
