@@ -13,6 +13,14 @@
 define( 'TWO_FACTOR_PHONE_DIR', plugin_dir_path( __FILE__ ) );
 
 function Two_Factor_Phone_init( $providers ) {
+/**
+ * Return path to Two Factor Phone plugin.
+ *
+ * @since 0.1-dev
+ *
+ * @param string[] $providers Array of providers.
+ * @return string[] Array of providers.
+ */
 	$providers['Two_Factor_Phone'] = TWO_FACTOR_PHONE_DIR . 'class.two-factor-phone.php';
 
 	return $providers;

@@ -44,6 +44,10 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 	 */
 	const TOKEN_META_KEY = '_two_factor_phone_token';
 
+	/**
+	 * Number words.
+	 * @var string[]
+	 */
 	private $number_words;
 
 	/**
@@ -280,7 +284,7 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 	/**
 	 * Display the form in Twilio section.
 	 *
-	 * @since 0.1.2
+	 * @since 0.1-dev
 	 *
 	 * @access public
 	 * @static
@@ -335,6 +339,13 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 		update_user_meta( $user_id, self::RECEIVER_NUMBER_META_KEY, $_POST['twilio-phone-receiver'] );
 	}
 
+	/**
+	 * Display TwiML.
+	 *
+	 * @since 0.1-dev
+	 *
+	 * @access public
+	 */
 	public function show_twiml_page() {
 		check_ajax_referer( 'two-factor-phone-twiml', 'nonce' );
 		if ( empty( $_REQUEST['user'] ) || ! is_numeric( $_REQUEST['user'] ) ) {
@@ -381,6 +392,14 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 		exit;
 	}
 
+	/**
+	 * Load Translations.
+	 *
+	 * @since 0.1-dev
+	 *
+	 * @access public
+	 * @static
+	 */
 	public static function load_plugin_textdomain() {
 		load_plugin_textdomain( 'two-factor-phone', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
 	}
