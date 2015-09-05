@@ -255,4 +255,24 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 
 		$this->assertNull( $this->provider->show_user_profile( $user ) );
 	}
+
+	/**
+	 * Verify that twilio item at user profile is displaying.
+	 * @covers Two_Factor_Phone::show_twilio_item
+	 */
+	function test_show_twilio_item() {
+		update_user_meta( $user->ID, Two_Factor_Phone::ACCOUNT_SID_META_KEY,     'AC6de23fc078bf6a68766cb71396bd909f' );
+		update_user_meta( $user->ID, Two_Factor_Phone::AUTH_TOKEN_META_KEY,      'e89ae308710c53982fad1d6795a6c75b' );
+		update_user_meta( $user->ID, Two_Factor_Phone::SENDER_NUMBER_META_KEY,   '+15005550006' );
+		update_user_meta( $user->ID, Two_Factor_Phone::RECEIVER_NUMBER_META_KEY, '+15005550005' );
+
+		$this->expectOutputRegex('/AC6de23fc078bf6a68766cb71396bd909f/s');
+		$this->expectOutputRegex('/e89ae308710c53982fad1d6795a6c75b/s');
+		$this->expectOutputRegex('/\+15005550006/s');
+		$this->expectOutputRegex('/\+15005550005/s');
+
+		$user = new WP_User( $this->factory->user->create() );
+
+		$this->provider->show_user_profile( $user );
+	}
 }
