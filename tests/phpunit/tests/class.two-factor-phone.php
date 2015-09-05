@@ -276,4 +276,93 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 
 		$this->provider->show_twilio_item( $user );
 	}
+
+	/**
+	 * Verify that twilio item at user profile is updated.
+	 * @covers Two_Factor_Phone::catch_submission
+	 */
+	function test_catch_submission() {
+		$this->markTestIncomplete( 'This test is not implemented yet.' );
+
+		$current_user = wp_get_current_user();
+		$new_user = new WP_User( $this->factory->user->create() );
+		$new_user->add_cap( 'edit_users' );
+
+		wp_set_current_user( $new_user->ID );
+
+		$_POST['twilio-phone-sid']      = 'dummydummy';
+		$_POST['twilio-phone-token']    = 'WordPress!';
+		$_POST['twilio-phone-sender']   = '+100000000000';
+		$_POST['twilio-phone-receiver'] = '+810000000000';
+
+		$this->provider->catch_submission( $current_user->ID );
+
+		$this->assertSame( $_POST['twilio-phone-sid'],      get_user_meta( $current_user->ID, Two_Factor_Phone::ACCOUNT_SID_META_KEY, true ) );
+		$this->assertSame( $_POST['twilio-phone-token'],    get_user_meta( $current_user->ID, Two_Factor_Phone::AUTH_TOKEN_META_KEY, true ) );
+		$this->assertSame( $_POST['twilio-phone-sender'],   get_user_meta( $current_user->ID, Two_Factor_Phone::SENDER_NUMBER_META_KEY, true ) );
+		$this->assertSame( $_POST['twilio-phone-receiver'], get_user_meta( $current_user->ID, Two_Factor_Phone::RECEIVER_NUMBER_META_KEY, true ) );
+
+		wp_set_current_user( $current_user->ID );
+	}
+
+	/**
+	 * Verify that submission catcher returns null.
+	 * @covers Two_Factor_Phone::catch_submission
+	 */
+	function test_catch_submission_no_cap() {
+		$current_user = wp_get_current_user();
+		$new_user = new WP_User( $this->factory->user->create( array(
+			'role' => 'subscriber',
+		) ) );
+
+		wp_set_current_user( $new_user->ID );
+
+		$this->assertNull( $this->provider->catch_submission( $current_user->ID ) );
+
+		wp_set_current_user( $current_user->ID );
+	}
+
+	/**
+	 * Verify that TwiML is displayed.
+	 * @covers Two_Factor_Phone::show_twiml_page
+	 */
+	function test_show_twiml_page() {
+		$user = new WP_User( $this->factory->user->create() );
+
+		$_POST['nonce'] = wp_create_nonce( 'two-factor-phone-twiml' );
+		$_POST['user']  = $user->ID;
+
+		$this->markTestIncomplete( 'This test is not implemented yet.' );
+
+		$this->assertFalse( $this->provider->show_twiml_page() );
+	}
+
+	/**
+	 * Verify that TwiML is not displayed without nonce.
+	 * @covers Two_Factor_Phone::show_twiml_page
+	 */
+	function test_show_twiml_page_no_nonce() {
+		$this->assertFalse( $this->provider->show_twiml_page() );
+	}
+
+	/**
+	 * Verify that TwiML is not displayed without user ID.
+	 * @covers Two_Factor_Phone::show_twiml_page
+	 */
+	function test_show_twiml_page_no_uid() {
+		$_POST['nonce'] = wp_create_nonce( 'two-factor-phone-twiml' );
+
+		$this->assertFalse( $this->provider->show_twiml_page() );
+	}
+
+	/**
+	 * Verify that TwiML is not displayed without valid user ID.
+	 * @covers Two_Factor_Phone::show_twiml_page
+	 */
+	function test_show_twiml_page_no_valid_uid() {
+		$_POST['nonce'] = wp_create_nonce( 'two-factor-phone-twiml' );
+		$_POST['user']  = -1;
+
+		$this->assertFalse( $this->provider->show_twiml_page() );
+	}
 }
