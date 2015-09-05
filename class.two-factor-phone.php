@@ -153,7 +153,7 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 		$sender   = get_user_meta( $user->ID, self::SENDER_NUMBER_META_KEY,   true );
 		$receiver = get_user_meta( $user->ID, self::RECEIVER_NUMBER_META_KEY, true );
 
-		self::$twilio = new Services_Twilio($sid, $token);
+		self::$twilio = new Services_Twilio( $sid, $token );
 
 		$twiml_url = admin_url( 'admin-ajax.php?action=two-factor-phone-twiml&user=' . $user->ID );
 		$twiml_url = add_query_arg( 'nonce', wp_create_nonce( 'two-factor-phone-twiml' ), $twiml_url );
