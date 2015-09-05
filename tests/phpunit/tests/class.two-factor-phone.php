@@ -91,15 +91,62 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Verify called tokens can be validated.
+	 * @covers Two_Factor_Phone::generate_and_call_token
+	 */
+	function test_generate_and_call_token_invalid_data() {
+		$user = new WP_User( $this->factory->user->create() );
+
+		update_user_meta( $user->ID, Two_Factor_Phone::ACCOUNT_SID_META_KEY,     'dummydummy' );
+		update_user_meta( $user->ID, Two_Factor_Phone::AUTH_TOKEN_META_KEY,      'WordPress!' );
+		update_user_meta( $user->ID, Two_Factor_Phone::SENDER_NUMBER_META_KEY,   '+100000000000' );
+		update_user_meta( $user->ID, Two_Factor_Phone::RECEIVER_NUMBER_META_KEY, '+810000000000' );
+
+		$this->assertFalse( $this->provider->generate_and_call_token( $user ) );
+	}
+
+	/**
+	 * Verify the contents of the authentication page.
+	 * @covers Two_Factor_Phone::authentication_page
+	 */
+	function test_authentication_page() {
+		$this->expectOutputRegex('/<p>An error occured while calling.<\/p>/');
+
+		$user = new WP_User( $this->factory->user->create() );
+
+		update_user_meta( $user->ID, Two_Factor_Phone::ACCOUNT_SID_META_KEY,     'AC6de23fc078bf6a68766cb71396bd909f' );
+		update_user_meta( $user->ID, Two_Factor_Phone::AUTH_TOKEN_META_KEY,      'e89ae308710c53982fad1d6795a6c75b' );
+		update_user_meta( $user->ID, Two_Factor_Phone::SENDER_NUMBER_META_KEY,   '+15005550006' );
+		update_user_meta( $user->ID, Two_Factor_Phone::RECEIVER_NUMBER_META_KEY, '+15005550005' );
+
+		$this->provider->authentication_page( $user );
+	}
+
+	/**
+	 * Verify the contents of the authentication page when invalid data are provided.
+	 * @covers Two_Factor_Phone::authentication_page
+	 */
+	function test_authentication_page_invalid_data() {
+		$this->expectOutputRegex('/<p>An error occured while calling.<\/p>/');
+
+		$user = new WP_User( $this->factory->user->create() );
+
+		update_user_meta( $user->ID, Two_Factor_Phone::ACCOUNT_SID_META_KEY,     'dummydummy' );
+		update_user_meta( $user->ID, Two_Factor_Phone::AUTH_TOKEN_META_KEY,      'WordPress!' );
+		update_user_meta( $user->ID, Two_Factor_Phone::SENDER_NUMBER_META_KEY,   '+100000000000' );
+		update_user_meta( $user->ID, Two_Factor_Phone::RECEIVER_NUMBER_META_KEY, '+810000000000' );
+
+		$this->provider->authentication_page( $user );
+	}
+
+	/**
 	 * Verify the contents of the authentication page when no user is provided.
 	 * @covers Two_Factor_Phone::authentication_page
 	 */
 	function test_authentication_page_no_user() {
-		ob_start();
-		$this->provider->authentication_page( false );
-		$contents = ob_get_clean();
+		$this->expectOutputString('');
 
-		$this->assertEmpty( $contents );
+		$this->provider->authentication_page( false );
 	}
 
 	/**
