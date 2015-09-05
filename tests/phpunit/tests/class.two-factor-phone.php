@@ -126,7 +126,8 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 	 * @covers Two_Factor_Phone::authentication_page
 	 */
 	function test_authentication_page() {
-		$this->expectOutputRegex('/^\s*<p>A verification code has been sent to the phone number associated with your account\.<\/p>.*<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Log In"  \/><\/p>\s*$/s');
+		$this->expectOutputRegex('/^\s*<p>A verification code has been sent to the phone number associated with your account\.<\/p>/s');
+		$this->expectOutputRegex('/<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Log In"  \/><\/p>\s*$/s');
 
 		$user = new WP_User( $this->factory->user->create() );
 
@@ -227,10 +228,26 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Verify that user profile returns null.
+	 * Verify that user profile is displaying.
 	 * @covers Two_Factor_Phone::show_user_profile
 	 */
 	function test_show_user_profile() {
+		global $wp_actions;
+
+		$this->expectOutputRegex('/^\s*<div class="twilio" id="twilio-section">\s*<h3>Twilio<\/h3>\s*<table class="form-table">/s');
+		$this->expectOutputRegex('/<\/table>\s*<\/div>\s*$/s');
+
+		unset( $wp_actions['user_profile_twilio'] );
+		$user = new WP_User( $this->factory->user->create() );
+
+		$this->assertNull( $this->provider->show_user_profile( $user ) );
+	}
+
+	/**
+	 * Verify that user profile returns null.
+	 * @covers Two_Factor_Phone::show_user_profile
+	 */
+	function test_show_user_profile_did_action() {
 		global $wp_actions;
 
 		$wp_actions['user_profile_twilio'] = 1;
