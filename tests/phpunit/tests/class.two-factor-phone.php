@@ -110,7 +110,7 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 	 * @covers Two_Factor_Phone::authentication_page
 	 */
 	function test_authentication_page() {
-		$this->expectOutputRegex('/<p>An error occured while calling.<\/p>/');
+		$this->expectOutputRegex('/<p>A verification code has been sent to the phone number associated with your account\.<\/p>.*<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Log In"  \/><\/p>/');
 
 		$user = new WP_User( $this->factory->user->create() );
 
@@ -127,7 +127,7 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 	 * @covers Two_Factor_Phone::authentication_page
 	 */
 	function test_authentication_page_invalid_data() {
-		$this->expectOutputRegex('/<p>An error occured while calling.<\/p>/');
+		$this->expectOutputRegex('/<p>An error occured while calling\.<\/p>/');
 
 		$user = new WP_User( $this->factory->user->create() );
 
