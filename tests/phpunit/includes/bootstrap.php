@@ -26,7 +26,7 @@ function _manually_load_plugin() {
 		$force_plugins = explode( ',', WP_TEST_ACTIVATED_PLUGINS );
 
 		foreach( $force_plugins as $plugin ) {
-			require dirname( __FILE__ ) . '/../../../../' . $plugin;
+			require __DIR__ . '/../../../../' . $plugin;
 
 			$active_plugins[] = $plugin;
 		}
@@ -34,7 +34,7 @@ function _manually_load_plugin() {
 		$dependencies = require __DIR__ . '/dependencies-array.php';
 
 		foreach ( $dependencies as $dependency ){
-			require dirname( __FILE__ ) . '/../../../../' . $dependency['include'];
+			require __DIR__ . '/../../../../' . $dependency['include'];
 
 			$active_plugins[] = $dependency['include'];
 		}
