@@ -40,4 +40,15 @@ class Tests_Two_Factor_Phone extends WP_UnitTestCase {
 		$this->assertTrue( class_exists( 'Two_Factor_Phone' ) );
 
 	}
+
+	/**
+	 * Add provider to the list.
+	 * @covers ::two_factor_phone_init
+	 */
+	function test_two_factor_phone_init() {
+		$this->assertSame(
+			array( 'Two_Factor_Phone' => TWO_FACTOR_PHONE_DIR . 'class.two-factor-phone.php' ),
+			two_factor_phone_init( array() )
+		);
+	}
 }
