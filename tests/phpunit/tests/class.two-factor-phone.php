@@ -110,7 +110,7 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 	 * @covers Two_Factor_Phone::authentication_page
 	 */
 	function test_authentication_page() {
-		$this->expectOutputRegex('/<p>A verification code has been sent to the phone number associated with your account\.<\/p>.*<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Log In"  \/><\/p>/');
+		$this->expectOutputRegex('/^\s*<p>A verification code has been sent to the phone number associated with your account\.<\/p>.*<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Log In"  \/><\/p>\s*$/s');
 
 		$user = new WP_User( $this->factory->user->create() );
 
