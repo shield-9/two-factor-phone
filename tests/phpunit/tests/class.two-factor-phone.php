@@ -23,6 +23,22 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 	 * @covers Two_Factor_Phone::get_instance
 	 */
 	function test_get_instance() {
+		global $wp_actions;
+
+		unset( $wp_actions['plugins_loaded'] );
+
+		$this->assertInstanceOf( 'Two_Factor_Phone', $this->provider->get_instance() );
+	}
+
+	/**
+	 * Verify an instance exists.
+	 * @covers Two_Factor_Phone::get_instance
+	 */
+	function test_get_instance_did_action() {
+		global $wp_actions;
+
+		$wp_actions['plugins_loaded'] = 1;
+
 		$this->assertInstanceOf( 'Two_Factor_Phone', $this->provider->get_instance() );
 	}
 
@@ -208,5 +224,18 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 		delete_user_meta( $user->ID, Two_Factor_Phone::RECEIVER_NUMBER_META_KEY );
 
 		$this->assertFalse( $this->provider->is_available_for_user( $user ) );
+	}
+
+	/**
+	 * Verify that user profile returns null.
+	 * @covers Two_Factor_Phone::show_user_profile
+	 */
+	function test_show_user_profile() {
+		global $wp_actions;
+
+		$wp_actions['user_profile_twilio'] = 1;
+		$user = new WP_User( $this->factory->user->create() );
+
+		$this->assertNull( $this->provider->show_user_profile( $user ) );
 	}
 }
