@@ -44,6 +44,8 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 	 */
 	const TOKEN_META_KEY = '_two_factor_phone_token';
 
+	private $number_words;
+
 	/**
 	 * Ensures only one instance of this class exists in memory at any one time.
 	 *
@@ -339,6 +341,19 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 			return false;
 		}
 
+		$this->number_words = array(
+			0 => __( 'zero',  'two-factor-phone' ),
+			1 => __( 'one',   'two-factor-phone' ),
+			2 => __( 'two',   'two-factor-phone' ),
+			3 => __( 'three', 'two-factor-phone' ),
+			4 => __( 'four',  'two-factor-phone' ),
+			5 => __( 'five',  'two-factor-phone' ),
+			6 => __( 'six',   'two-factor-phone' ),
+			7 => __( 'seven', 'two-factor-phone' ),
+			8 => __( 'eight', 'two-factor-phone' ),
+			9 => __( 'nine',  'two-factor-phone' ),
+		);
+
 		require_once( TWO_FACTOR_PHONE_DIR . 'includes/Twilio/Services/Twilio.php' );
 
 		$code = $this->generate_token( absint( $_REQUEST['user'] ) );
@@ -359,7 +374,7 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 			$say_options
 		);
 		foreach ( str_split( $code ) as $number ) {
-			$response->say( $number, $say_options );
+			$response->say( $this->number_words[ $number ], $say_options );
 		}
 
 		echo $response;
