@@ -70,7 +70,7 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 	 * @since 0.1-dev
 	 */
 	protected function __construct() {
-		add_action( 'admin_menu', array( $this, 'add_twiml_page' ) );
+		add_action( 'wp_ajax_nopriv_two-factor-phone-twiml', array( $this, 'show_twiml_page' ) );
 
 		add_action( 'two-factor-user-options-' . __CLASS__, array( $this, 'user_options' ) );
 
@@ -153,8 +153,16 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 
 		self::$twilio = new Services_Twilio($sid, $token);
 
+		$twiml_url = admin_url( 'admin-ajax.php?action=two-factor-phone-twiml&user=' . $user->ID );
+		$twiml_url = add_query_arg( 'nonce', wp_create_nonce( 'two-factor-phone-twiml' ), $twiml_url );
+
 		try {
-			$call = self::$twilio->account->calls->create( $sender, $receiver, "http://demo.twilio.com/docs/voice.xml", array() );
+			$call = self::$twilio->account->calls->create(
+				$sender,
+				$receiver,
+				$twiml_url,
+				array()
+			);
 		} catch ( Services_Twilio_RestException $e ) {
 			return false;
 		}
@@ -325,21 +333,15 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 		update_user_meta( $user_id, self::RECEIVER_NUMBER_META_KEY, $_POST['twilio-phone-receiver'] );
 	}
 
-	public function add_twiml_page() {
-		add_submenu_page( 
-			null,
-			esc_html__( 'Two Factor Phone TwiML', 'two-factor-phone' ),
-			esc_html__( 'Two Factor Phone TwiML', 'two-factor-phone' ),
-			'edit_user',
-			'two-factor-phone-twiml',
-			array( $this, 'show_twiml_page' )
-		);
-	}
-
 	public function show_twiml_page() {
+		check_ajax_referer( 'two-factor-phone-twiml', 'nonce' );
+		if ( empty( $_REQUEST['user'] ) || ! is_numeric( $_REQUEST['user'] ) ) {
+			return false;
+		}
+
 		require_once( TWO_FACTOR_PHONE_DIR . 'includes/Twilio/Services/Twilio.php' );
 
-		$code = $this->generate_token( $user->ID );
+		$code = $this->generate_token( absint( $_REQUEST['user'] ) );
 
 		$response = new Services_Twilio_Twiml();
 		$response->say( wp_strip_all_tags(
@@ -350,6 +352,7 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 			)
 		) );
 		echo $response;
+		exit;
 	}
 
 	public static function load_plugin_textdomain() {
