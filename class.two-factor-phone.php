@@ -388,7 +388,7 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 			$response->say( $this->number_words[ $number ], $say_options );
 		}
 
-		echo $response;
+		echo $response; // WPCS: XSS OK.
 		exit;
 	}
 
