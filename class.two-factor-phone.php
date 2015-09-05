@@ -401,6 +401,6 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 	 * @static
 	 */
 	public static function load_plugin_textdomain() {
-		load_plugin_textdomain( 'two-factor-phone', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'two-factor-phone', false, basename( dirname( __FILE__ ) ) . '/languages/' );
 	}
 }
