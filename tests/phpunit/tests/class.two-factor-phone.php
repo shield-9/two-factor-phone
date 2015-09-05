@@ -23,7 +23,7 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 	 * @covers Two_Factor_Phone::get_instance
 	 */
 	function test_get_instance() {
-		$this->assertNotNull( $this->provider->get_instance() );
+		$this->assertInstanceOf( 'Two_Factor_Phone', $this->provider->get_instance() );
 	}
 
 	/**
