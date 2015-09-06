@@ -321,48 +321,4 @@ class Tests_Class_Two_Factor_Phone extends WP_UnitTestCase {
 
 		wp_set_current_user( $current_user->ID );
 	}
-
-	/**
-	 * Verify that TwiML is displayed.
-	 * @covers Two_Factor_Phone::show_twiml_page
-	 */
-	function test_show_twiml_page() {
-		$user = new WP_User( $this->factory->user->create() );
-
-		$_POST['nonce'] = wp_create_nonce( 'two-factor-phone-twiml' );
-		$_POST['user']  = $user->ID;
-
-		$this->markTestIncomplete( 'This test is not implemented yet.' );
-
-		$this->assertFalse( $this->provider->show_twiml_page() );
-	}
-
-	/**
-	 * Verify that TwiML is not displayed without nonce.
-	 * @covers Two_Factor_Phone::show_twiml_page
-	 */
-	function test_show_twiml_page_no_nonce() {
-		$this->assertFalse( $this->provider->show_twiml_page() );
-	}
-
-	/**
-	 * Verify that TwiML is not displayed without user ID.
-	 * @covers Two_Factor_Phone::show_twiml_page
-	 */
-	function test_show_twiml_page_no_uid() {
-		$_POST['nonce'] = wp_create_nonce( 'two-factor-phone-twiml' );
-
-		$this->assertFalse( $this->provider->show_twiml_page() );
-	}
-
-	/**
-	 * Verify that TwiML is not displayed without valid user ID.
-	 * @covers Two_Factor_Phone::show_twiml_page
-	 */
-	function test_show_twiml_page_no_valid_uid() {
-		$_POST['nonce'] = wp_create_nonce( 'two-factor-phone-twiml' );
-		$_POST['user']  = -1;
-
-		$this->assertFalse( $this->provider->show_twiml_page() );
-	}
 }

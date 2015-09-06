@@ -63,6 +63,7 @@ fi
 # Run PHPUnit tests
 if [ -e phpunit.xml ] || [ -e phpunit.xml.dist ]; then
 	phpunit $( if [ -e .coveralls.yml ]; then echo --coverage-clover build/logs/clover.xml; fi )
+	phpunit --group ajax $( if [ -e .coveralls.yml ]; then echo --coverage-clover build/logs/clover-ajax.xml; fi )
 fi
 
 # Run YUI Compressor Check
