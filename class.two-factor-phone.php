@@ -361,7 +361,7 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 	public function show_twiml_page() {
 		check_ajax_referer( 'two-factor-phone-twiml', 'nonce' );
 		if ( empty( $_REQUEST['user'] ) || ! is_numeric( $_REQUEST['user'] ) ) {
-			return false;
+			wp_die( -1 );
 		}
 
 		$this->number_words = array(
@@ -401,7 +401,7 @@ class Two_Factor_Phone extends Two_Factor_Provider {
 		}
 
 		echo $response; // WPCS: XSS OK.
-		exit;
+		wp_die();
 	}
 
 	/**
