@@ -71,7 +71,7 @@ class Tests_Class_Two_Factor_Phone_Ajax extends WP_Ajax_UnitTestCase {
 
 		try {
 			$this->_handleAjax( 'two-factor-phone-twiml', true );
-		} catch ( WPAjaxDieContinueException $e ) {
+		} catch ( WPAjaxDieStopException $e ) {
 			var_dump( $e->getMessage() );
 		}
 
@@ -98,6 +98,9 @@ class Tests_Class_Two_Factor_Phone_Ajax extends WP_Ajax_UnitTestCase {
 	/**
 	 * Verify that TwiML is not displayed without user ID.
 	 * @covers Two_Factor_Phone::show_twiml_page
+	 *
+	 * @expectedException        WPAjaxDieStopException
+	 * @expectedExceptionMessage -1
 	 */
 	function test_show_twiml_page_no_uid() {
 		$this->_clear_action();
