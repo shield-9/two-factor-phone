@@ -69,7 +69,11 @@ class Tests_Class_Two_Factor_Phone_Ajax extends WP_Ajax_UnitTestCase {
 
 		$this->logout();
 
-		$this->_handleAjax( 'two-factor-phone-twiml', true );
+		try {
+			$this->_handleAjax( 'two-factor-phone-twiml', true );
+		} catch ( WPAjaxDieContinueException $e ) {
+			var_dump( $e->getMessage() );
+		}
 
 		var_dump( $this->_last_response );
 	}
