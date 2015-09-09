@@ -33,7 +33,7 @@ This plugin adds Phone Call support to [Two Factor](https://wordpress.org/plugin
 
 ## Installation
 
-1. Upload the `two-factor-sms` folder to the `/wp-content/plugins/` directory.
+1. Upload the `two-factor-phone` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Enter Twilio API key and your numbers at profile screen.
 
