@@ -76,7 +76,6 @@ class Tests_Class_Two_Factor_Phone_Ajax extends WP_Ajax_UnitTestCase {
 		}
 
 		var_dump( $this->_last_response );
-//		$this->assertRegExp( '/Your login confirmation code for .* is:/', $e->getMessage() );
 	}
 
 	/**
